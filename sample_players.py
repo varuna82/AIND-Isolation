@@ -4,6 +4,8 @@ own agent and example heuristic functions.
 
 from random import randint
 
+from game_agent import custom_score
+
 
 def null_score(game, player):
     """This heuristic presumes no knowledge for non-terminal states, and
@@ -208,7 +210,8 @@ class HumanPlayer():
         if not legal_moves:
             return (-1, -1)
 
-        print(('\t'.join(['[%d] %s' % (i, str(move)) for i, move in enumerate(legal_moves)])))
+        print(game.to_string())
+        print(('\t'.join(['[%d] %s %f' % (i, str(move), custom_score(game.forecast_move(move), game.active_player)) for i, move in enumerate(legal_moves)])))
 
         valid_choice = False
         while not valid_choice:
@@ -229,7 +232,7 @@ if __name__ == "__main__":
     from isolation import Board
 
     # create an isolation board (by default 7x7)
-    player1 = RandomPlayer()
+    player1 = HumanPlayer()
     player2 = GreedyPlayer()
     game = Board(player1, player2)
 
@@ -256,7 +259,7 @@ if __name__ == "__main__":
 
     # play the remainder of the game automatically -- outcome can be "illegal
     # move" or "timeout"; it should _always_ be "illegal move" in this example
-    winner, history, outcome = game.play()
+    winner, history, outcome = game.play(time_limit=5*60*1000)
     print("\nWinner: {}\nOutcome: {}".format(winner, outcome))
     print(game.to_string())
     print("Move history:\n{!s}".format(history))
